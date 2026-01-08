@@ -1,0 +1,7 @@
+BTX Laudos V6.1 (GitHub Pages)
+
+- Faça upload de TODOS os arquivos desta pasta na raiz do repositório.
+- Em Settings > Pages: Branch main, folder /(root).
+- Se já tinha uma versão antes: depois de publicar, aperte Ctrl+F5 e/ou limpe dados do site.
+
+Obs: IA via OpenAI só funciona rodando o servidor local (pasta server_local).

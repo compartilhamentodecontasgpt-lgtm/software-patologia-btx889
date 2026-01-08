@@ -1,0 +1,34 @@
+BTX Laudos — PWA + Memória + IA (OpenAI) — Versão PC
+
+✅ O app (PWA) fica dentro da pasta /web
+✅ A IA funciona via um SERVIDOR LOCAL (server.py), para não expor sua chave da OpenAI e evitar CORS.
+
+1) INSTALAR DEPENDÊNCIAS (uma vez)
+   - Instale Python 3.10+ (Windows)
+   - Abra o Terminal / PowerShell nesta pasta
+   - Rode:
+       pip install -r requirements.txt
+
+2) CONFIGURAR SUA CHAVE (OBRIGATÓRIO para IA)
+   - No PowerShell (apenas para esta sessão):
+       setx OPENAI_API_KEY "SUA_CHAVE_AQUI"
+     Feche e abra o terminal novamente (ou reinicie o PC) para pegar a variável.
+   - Opcional (modelo):
+       setx OPENAI_MODEL "gpt-5"
+
+3) RODAR
+       python server.py
+
+4) ABRIR NO NAVEGADOR
+   - Abra:
+       http://127.0.0.1:5173
+
+5) USAR NO GITHUB PAGES
+   - Para publicar, suba SOMENTE a pasta /web no GitHub Pages.
+   - Observação: no GitHub Pages a IA "dentro do app" NÃO funciona sem um backend/proxy.
+     Você pode usar "Gerar prompt" + "Copiar prompt" e colar no ChatGPT.
+
+Segurança:
+- Nunca coloque sua OPENAI_API_KEY dentro do index.html / JavaScript.
+- A OpenAI recomenda manter a chave no servidor. Veja docs oficiais.
+

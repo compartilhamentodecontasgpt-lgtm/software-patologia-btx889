@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BTX Laudos — Final (V5)</title>
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <style>
+    :root{
+      --bg:#f4f6f8; --card:#ffffff; --text:#111827; --muted:#6b7280; --line:#e5e7eb;
+      --accent:#2563eb; --accent2:#0ea5e9; --danger:#dc2626; --ok:#16a34a;
+      --shadow: 0 12px 30px rgba(17,24,39,.08);
+      --radius:16px; --radius2:20px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 12% -10%, rgba(37,99,235,.16), transparent 55%),
+        radial-gradient(900px 700px at 110% 10%, rgba(14,165,233,.12), transparent 50%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 55%, #ffffff 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .app{max-width:1250px;margin:0 auto;padding:18px 14px 28px}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      background: rgba(255,255,255,.72);
+      backdrop-filter:saturate(140%) blur(10px);
+      border:1px solid rgba(229,231,235,.9);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:280px}
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.95), transparent 60%),
+        linear-gradient(135deg, rgba(37,99,235,.95), rgba(14,165,233,.55));
+      box-shadow: 0 10px 20px rgba(37,99,235,.18);
+      border:1px solid rgba(17,24,39,.06);
+    }
+    .titlewrap{display:flex;flex-direction:column;line-height:1.15}
+    .title{font-weight:900;letter-spacing:.2px;font-size:16px}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    .actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      appearance:none;
+      border:1px solid rgba(17,24,39,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,.98));
+      color:var(--text);
+      border-radius: 12px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, opacity .12s ease;
+      user-select:none; white-space:nowrap;
+      box-shadow: 0 8px 16px rgba(17,24,39,.06);
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(37,99,235,.30); box-shadow: 0 10px 18px rgba(17,24,39,.08)}
+    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
+    .btn.primary{
+      border-color: rgba(37,99,235,.45);
+      background: linear-gradient(180deg, rgba(37,99,235,.12), rgba(37,99,235,.06));
+      color:#0b1b44;
+    }
+    .btn.danger{
+      border-color: rgba(220,38,38,.35);
+      background: linear-gradient(180deg, rgba(220,38,38,.08), rgba(220,38,38,.04));
+      color:#7f1d1d;
+    }
+    .btn.ok{
+      border-color: rgba(22,163,74,.35);
+      background: linear-gradient(180deg, rgba(22,163,74,.10), rgba(22,163,74,.05));
+      color:#0f3d1f;
+    }
+    .btn .ico{width:16px;height:16px;opacity:.9}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,.96));
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding:14px 14px 10px;
+      display:flex;align-items:center;justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(229,231,235,.9);
+      background: rgba(251,253,255,.9);
+    }
+    .cardHeader h2{margin:0;font-size:14px;letter-spacing:.2px}
+    .badge{
+      font-size:12px;color:var(--muted);
+      border:1px solid rgba(17,24,39,.10);
+      padding:6px 10px;border-radius:999px;background: rgba(255,255,255,.9);
+    }
+    .cardBody{padding:14px}
+    .grid{margin-top:14px;display:grid;grid-template-columns: 1.1fr .9fr;gap:14px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}.brand{min-width:auto}}
+    .section{
+      border:1px solid rgba(17,24,39,.08);
+      background: rgba(248,250,252,.92);
+      border-radius: var(--radius);
+      padding:12px;
+      margin-bottom:12px;
+    }
+    .section:last-child{margin-bottom:0}
+    .sectionTitle{
+      display:flex;align-items:center;justify-content:space-between; gap:10px;
+      font-size:13px;font-weight:900;margin:0 0 10px;
+    }
+    .sectionTitle .left{display:flex;align-items:center;gap:8px}
+    .dot{width:10px;height:10px;border-radius:999px;background: linear-gradient(180deg, var(--accent2), var(--accent));box-shadow: 0 10px 18px rgba(37,99,235,.18);}
+    .formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:720px){.formGrid{grid-template-columns:1fr}}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px;font-weight:800}
+    input, textarea, select{
+      width:100%;
+      border-radius: 12px;
+      border:1px solid rgba(17,24,39,.12);
+      background: rgba(255,255,255,1);
+      color:var(--text);
+      padding:10px 10px;
+      outline:none;
+      transition: border-color .12s ease, box-shadow .12s ease;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+    textarea{min-height:92px;resize:vertical}
+    .help{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.45}
+    .help b{color:var(--text)}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      font-size:12px;color:var(--muted);
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(17,24,39,.10);
+      background: rgba(255,255,255,.9);
+    }
+    .toast{
+      position:fixed;right:16px;bottom:16px;
+      background: rgba(255,255,255,.96);
+      border:1px solid rgba(17,24,39,.12);
+      box-shadow: var(--shadow);
+      padding:12px;border-radius:14px;max-width:440px;display:none;
+    }
+    .toast.show{display:block}
+    .toast .t{font-weight:900}
+    .toast .m{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .kpi .chip{
+      font-size:12px; color:var(--muted);
+      border:1px solid rgba(17,24,39,.10);
+      padding:8px 10px;border-radius:999px;background:#fff;
+    }
+    .kpi .chip b{color:var(--text)}
+    .statusDot{
+      width:10px;height:10px;border-radius:999px; display:inline-block; margin-right:8px;
+      background: #9ca3af;
+    }
+    .statusDraft{background:#f59e0b}
+    .statusSent{background:#0ea5e9}
+    .statusDone{background:#16a34a}
+    .table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid rgba(17,24,39,.10);
+      border-radius:14px;
+      background:#fff;
+    }
+    .table th, .table td{
+      padding:10px 10px;
+      font-size:12px;
+      border-bottom:1px solid rgba(17,24,39,.08);
+      vertical-align:top;
+    }
+    .table th{color:var(--muted); text-align:left; background: rgba(248,250,252,.9); font-weight:900}
+    .table tr:last-child td{border-bottom:none}
+    .rowActions{display:flex; gap:8px; flex-wrap:wrap}
+    .mini{padding:7px 9px; font-size:12px; border-radius:10px; box-shadow:none}
+    .preview{margin-top:12px;display:grid;grid-template-columns: repeat(2, 1fr);gap:10px}
+    @media (max-width:720px){ .preview{grid-template-columns:1fr;} }
+    .ph{border:1px solid rgba(17,24,39,.10);border-radius: 14px;overflow:hidden;background:#fff}
+    .ph img{display:block;width:100%;height:220px;object-fit:cover;background:#e5e7eb}
+    .phMeta{padding:10px}
+    .phMeta input{font-family: var(--mono);font-size:12px;padding:8px 10px;border-radius: 10px}
+    .phMeta .small{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.35}
+    .aiBox{
+      border:1px solid rgba(37,99,235,.16);
+      background:
+        radial-gradient(700px 300px at 10% 0%, rgba(37,99,235,.12), transparent 50%),
+        rgba(248,250,252,.95);
+      border-radius: var(--radius);
+      padding:12px;
+    }
+    .aiBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .aiOut{margin-top:10px;display:grid;grid-template-columns:1fr;gap:10px}
+    .aiOut textarea{min-height:140px}
+    .footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center}
+    .footer code{font-family:var(--mono)}
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="titlewrap">
+          <div class="title">BTX Laudos — Final (V5)</div>
+          <div class="subtitle">PWA + memória automática (IndexedDB) • fotos • PDF • IA por prompt</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="btnHome" title="Voltar para Meus Casos">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5Z" stroke="currentColor" stroke-width="2"/></svg>
+          Meus casos
+        </button>
+
+        <button class="btn ok" id="btnNew" title="Criar um novo caso">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2"/></svg>
+          Novo caso
+        </button>
+
+        <button class="btn" id="btnExport" title="Exporta o caso atual (.json)">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2"/><path d="M12 15V3" stroke="currentColor" stroke-width="2"/></svg>
+          Exportar
+        </button>
+
+        <button class="btn" id="btnImport" title="Importa um caso (.json)">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><path d="M17 14l-5-5-5 5" stroke="currentColor" stroke-width="2"/><path d="M12 9v12" stroke="currentColor" stroke-width="2"/></svg>
+          Importar
+        </button>
+
+        <button class="btn" id="btnInstall" title="Instalar no computador (PWA)">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M12 3v10" stroke="currentColor" stroke-width="2"/><path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2"/><path d="M5 21h14" stroke="currentColor" stroke-width="2"/></svg>
+          Instalar
+        </button>
+
+        <button class="btn primary" id="btnPDF" title="Gera um PDF do caso atual">
+          <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="2"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="2"/><path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2"/></svg>
+          PDF
+        </button>
+
+        <span class="pill" id="savePill"><span class="statusDot" id="saveDot"></span><span id="saveText">Carregando...</span></span>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div id="viewHome" class="card" style="margin-top:14px;">
+      <div class="cardHeader">
+        <div>
+          <h2>Meus casos</h2>
+          <div class="help" style="margin-top:6px">Tudo fica <b>salvo automaticamente</b> no computador (IndexedDB). Você ainda pode exportar/importar para backup.</div>
+        </div>
+        <div class="kpi">
+          <span class="chip"><b id="kpiTotal">0</b> casos</span>
+          <span class="chip"><b id="kpiDraft">0</b> rascunhos</span>
+          <span class="chip"><b id="kpiSent">0</b> enviados</span>
+          <span class="chip"><b id="kpiDone">0</b> finalizados</span>
+        </div>
+      </div>
+      <div class="cardBody">
+        <div class="section">
+          <div class="sectionTitle">
+            <div class="left"><span class="dot"></span>Buscar e filtrar</div>
+            <span class="badge">Organização premium</span>
+          </div>
+
+          <div class="formGrid">
+            <div>
+              <label>Busca (código, paciente, sítio, hipótese...)</label>
+              <input id="homeSearch" placeholder="Ex.: BTX-2026, mucosa jugal, 45 anos..." />
+            </div>
+            <div>
+              <label>Status</label>
+              <select id="homeFilter">
+                <option value="all">Todos</option>
+                <option value="draft">Rascunho</option>
+                <option value="sent">Enviado</option>
+                <option value="done">Finalizado</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="sectionTitle">
+            <div class="left"><span class="dot"></span>Lista</div>
+            <span class="badge">Abrir • duplicar • excluir</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width:140px">Código</th>
+                <th style="width:130px">Data</th>
+                <th style="width:170px">Status</th>
+                <th>Resumo</th>
+                <th style="width:230px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="homeTable"></tbody>
+          </table>
+
+          <div class="help" style="margin-top:10px">
+            Dica: mantenha a privacidade do paciente usando <b>iniciais/código</b>. O app não envia nada para servidor.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="viewEditor" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <div class="cardHeader">
+            <h2>Dados do caso</h2>
+            <div class="badge" id="editorBadge">Caso</div>
+          </div>
+          <div class="cardBody">
+
+            <div class="section">
+              <div class="sectionTitle">
+                <div class="left"><span class="dot"></span>Identificação do profissional / serviço</div>
+                <span class="badge">Fixa no PDF</span>
+              </div>
+              <div class="formGrid">
+                <div><label>Profissional responsável</label><input id="profissional" placeholder="Ex.: Dr(a). Fulano de Tal" /></div>
+                <div><label>Registro profissional</label><input id="registro" placeholder="Ex.: CRO/CRM 00000" /></div>
+                <div><label>Especialidade</label><input id="especialidade" placeholder="Ex.: Patologia / Cirurgia / Clínica" /></div>
+                <div><label>Instituição / Serviço</label><input id="instituicao" placeholder="Ex.: Clínica BTX" /></div>
+                <div style="grid-column:1/-1"><label>Contato</label><input id="contato" placeholder="Ex.: (91) 9xxxx-xxxx • email@dominio.com" /></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle">
+                <div class="left"><span class="dot"></span>Identificação do caso</div>
+                <span class="badge">Organização</span>
+              </div>
+              <div class="formGrid">
+                <div><label>Código do caso</label><input id="codigo" placeholder="Ex.: BTX-2026-0001" /></div>
+                <div><label>Data do atendimento / coleta</label><input type="date" id="data" /></div>
+                <div><label>Finalidade</label>
+                  <select id="finalidade">
+                    <option>Encaminhamento diagnóstico</option>
+                    <option>Avaliação anatomopatológica</option>
+                    <option>Relatório clínico</option>
+                    <option>Acompanhamento evolutivo</option>
+                    <option>Exame complementar</option>
+                  </select>
+                </div>
+                <div><label>Status do caso</label>
+                  <select id="status">
+                    <option value="draft">Rascunho</option>
+                    <option value="sent">Enviado ao laboratório</option>
+                    <option value="done">Finalizado</option>
+                  </select>
+                </div>
+                <div><label>Privacidade do paciente</label>
+                  <select id="privacidade">
+                    <option value="codigo">Somente código/iniciais (recomendado)</option>
+                    <option value="nome">Nome completo</option>
+                  </select>
+                </div>
+                <div><label>Última atualização</label>
+                  <input id="updatedAt" disabled />
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Dados do paciente</div><span class="badge">Mínimo necessário</span></div>
+              <div class="formGrid">
+                <div><label id="lblPaciente">Iniciais / Código do paciente</label><input id="paciente" placeholder="Ex.: O.A.G.S." /></div>
+                <div><label>Idade</label><input id="idade" placeholder="Ex.: 45" /></div>
+                <div><label>Sexo</label><input id="sexo" placeholder="Ex.: M / F / Outro" /></div>
+                <div><label>Outras infos relevantes</label><input id="outras" placeholder="Ex.: comorbidades, alergias etc." /></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Queixa principal</div><span class="badge">Essencial</span></div>
+              <label>Texto direto relatado pelo paciente</label>
+              <textarea id="queixa" placeholder="Ex.: 'Ferida há 2 meses, às vezes sangra...'"></textarea>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>História clínica / evolução</div><span class="badge">Essencial</span></div>
+              <div class="formGrid">
+                <div><label>Tempo de evolução</label><input id="tempo" placeholder="Ex.: 2 meses" /></div>
+                <div><label>Evolução</label>
+                  <select id="evolucao"><option>Estável</option><option>Progressiva</option><option>Flutuante</option><option>Regressiva</option></select>
+                </div>
+                <div style="grid-column:1/-1"><label>Descrição da evolução</label><textarea id="historia" placeholder="Inclua início, mudanças, sintomas associados..."></textarea></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Localização anatômica</div><span class="badge">Essencial</span></div>
+              <div class="formGrid">
+                <div><label>Sistema / região geral</label>
+                  <select id="sistema"><option>Cavidade oral</option><option>Pele</option><option>Genital</option><option>Anal</option><option>ORL</option><option>Outro</option></select>
+                </div>
+                <div><label>Lateralidade</label>
+                  <select id="lateralidade"><option>Não aplicável</option><option>Direita</option><option>Esquerda</option><option>Linha média</option><option>Difusa</option></select>
+                </div>
+                <div style="grid-column:1/-1"><label>Sítio anatômico específico</label><input id="sitio" placeholder="Ex.: mucosa jugal / face / vulva..." /></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Descrição morfológica</div><span class="badge">Essencial</span></div>
+              <div class="formGrid">
+                <div><label>Tipo predominante</label>
+                  <select id="tipoLesao"><option>Mácula</option><option>Pápula</option><option>Placa</option><option>Nódulo</option><option>Úlcera</option><option>Vesícula / bolha</option><option>Massa</option><option>Área eritematosa</option><option>Outra</option></select>
+                </div>
+                <div><label>Dimensões (aprox.)</label><input id="dimensoes" placeholder="Ex.: 1,5 x 1,0 cm" /></div>
+                <div><label>Cor predominante</label><select id="cor"><option>Branca</option><option>Eritematosa</option><option>Pigmentada</option><option>Amarelada</option><option>Mista</option></select></div>
+                <div><label>Superfície</label><select id="superficie"><option>Lisa</option><option>Verrucosa</option><option>Ulcerada</option><option>Crostosa</option><option>Irregular</option></select></div>
+                <div><label>Bordas</label><select id="bordas"><option>Bem definidas</option><option>Mal definidas</option><option>Elevadas</option><option>Infiltradas</option></select></div>
+                <div><label>Sangramento</label><select id="sangra"><option>Não</option><option>Sim</option><option>Não avaliado</option></select></div>
+                <div style="grid-column:1/-1"><label>Descrição detalhada</label><textarea id="morfologia" placeholder="Aspecto, bordas, base, consistência (se avaliada), sinais e sintomas..."></textarea></div>
+              </div>
+            </div>
+
+            <div class="section"><div class="sectionTitle"><div class="left"><span class="dot"></span>Fatores associados / antecedentes</div><span class="badge">Contexto</span></div><textarea id="fatores" placeholder="Tabagismo, trauma crônico, doenças sistêmicas, medicações..."></textarea></div>
+            <div class="section"><div class="sectionTitle"><div class="left"><span class="dot"></span>Hipóteses clínicas</div><span class="badge">Hipóteses</span></div><textarea id="hipoteses" placeholder="Sempre como hipótese, conforme julgamento clínico."></textarea></div>
+            <div class="section"><div class="sectionTitle"><div class="left"><span class="dot"></span>Conduta / material encaminhado</div><span class="badge">Essencial</span></div><textarea id="conduta" placeholder="Biópsia, fixador, solicitações, exames..."></textarea></div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Observações finais</div><span class="badge">Opcional</span></div>
+              <textarea id="obs" placeholder="Observações adicionais (opcional)."></textarea>
+              <div class="help"><b>Declaração:</b> Relatório de descrição clínica. Correlacionar clinicamente e laboratorialmente. Não constitui diagnóstico definitivo isolado.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHeader">
+            <h2>Imagens + IA (texto)</h2>
+            <div class="badge">Sem diagnosticar</div>
+          </div>
+          <div class="cardBody">
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Registro fotográfico</div><span class="badge" id="imgCount">0 imagens</span></div>
+              <div class="section" style="background:#fff; border-style:dashed; border-color: rgba(37,99,235,.35)">
+                <label>Selecione imagens (JPG/PNG). Evite HEIC.</label>
+                <input id="fotos" type="file" accept="image/*" multiple />
+                <div class="help">Dica: 1 vista geral + 1 close. Se possível, inclua escala.</div>
+              </div>
+              <div id="preview" class="preview"></div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Assistente IA (revisão de texto)</div><span class="badge">Workflow</span></div>
+              <div class="aiBox">
+  <div class="kpi">
+    <span class="chip"><b>IA</b> assistência durante o laudo</span>
+    <span class="chip">sem diagnóstico</span>
+    <span class="chip">sem inventar dados</span>
+  </div>
+  <div class="help" style="margin-top:10px">
+    Use a IA como <b>apoio de escrita</b> (checklist do que falta, estruturação, padronização do texto e linguagem profissional).
+    <b>Não</b> interpreta imagens e <b>não</b> fecha diagnóstico. Você pode perguntar algo específico ou só pedir para “melhorar o texto”.
+  </div>
+
+  <div class="aiBtns" style="margin-top:12px">
+    <input id="iaPergunta" placeholder="Digite sua dúvida… Ex.: o que falta na descrição morfológica? / padronize a história clínica" />
+    <button class="btn primary" id="btnIAAjuda">IA — Ajudar no laudo (OpenAI)</button>
+    <button class="btn" id="btnGerarPrompt">Gerar prompt</button>
+    <button class="btn" id="btnCopiarPrompt">Copiar prompt</button>
+  </div>
+
+  <div class="aiOut" style="margin-top:12px">
+    <div>
+      <label>Prompt (para auditoria/registro)</label>
+      <textarea id="prompt" placeholder="Clique em “Gerar prompt” ou “IA — Ajudar no laudo”…"></textarea>
+      <div class="help" style="margin-top:6px">Dica: mesmo usando IA online, manter o prompt salvo ajuda na rastreabilidade.</div>
+    </div>
+    <div>
+      <label>Resposta da IA (fica salva no caso)</label>
+      <textarea id="respostaIA" placeholder="A resposta aparecerá aqui (ou cole manualmente)."></textarea>
+      <div class="help" style="margin-top:6px">
+        Se você estiver usando a versão no GitHub Pages, a IA “dentro do app” precisa de um servidor local (incluso no projeto) para proteger a chave.
+      </div>
+    </div>
+  </div>
+</div>
+            </div>
+
+            <div class="section">
+              <div class="sectionTitle"><div class="left"><span class="dot"></span>Checklist</div><span class="badge">Qualidade</span></div>
+              <div class="help" id="checklistText">Preencha os campos essenciais para liberar um PDF de qualidade.</div>
+              <div class="aiBtns">
+                <button class="btn" id="btnRevisar">Revisar campos essenciais</button>
+                <button class="btn danger" id="btnClearImages" title="Remove todas as imagens do caso">Remover imagens</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Instalação (PC): publique no GitHub Pages (HTTPS). Abrir via <code>file://</code> não ativa PWA/Service Worker.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="t" id="toastT">Ok</div>
+    <div class="m" id="toastM">Mensagem</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    const toast = (title,msg)=>{
+      $('toastT').textContent=title;
+      $('toastM').textContent=msg;
+      const el=$('toast');
+      el.classList.add('show');
+      clearTimeout(window.__t);
+      window.__t=setTimeout(()=>el.classList.remove('show'), 2800);
+    };
+
+    // ===== PWA install + SW =====
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', ()=> navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
+    }
+    let deferredPrompt = null;
+    $('btnInstall').style.display = 'none';
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      $('btnInstall').style.display = 'inline-flex';
+    });
+    $('btnInstall').addEventListener('click', async ()=>{
+      if(!deferredPrompt){
+        alert('Se o ícone de instalação aparecer na barra do navegador, use ele. Em alguns PCs, depende do Chrome/Edge e do HTTPS.');
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      $('btnInstall').style.display = 'none';
+      toast('Instalação', 'Se aceitou, o app vai aparecer como aplicativo no computador.');
+    });
+
+    // ===== Helpers =====
+    const nowDate = ()=>{
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    };
+    const fmtDateTime = (iso)=>{
+      try{
+        const d = new Date(iso);
+        const dd = String(d.getDate()).padStart(2,'0');
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const yy = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mi = String(d.getMinutes()).padStart(2,'0');
+        return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+      }catch{ return iso || ''; }
+    };
+    const uid = ()=> (crypto?.randomUUID ? crypto.randomUUID() : (Date.now().toString(36)+Math.random().toString(36).slice(2)));
+
+    function setSaveState(kind, text){
+      // kind: loading | dirty | saved | error
+      const dot = $('saveDot');
+      const t = $('saveText');
+      t.textContent = text || '';
+      dot.className = 'statusDot';
+      if(kind === 'dirty') dot.classList.add('statusDraft');
+      if(kind === 'saved') dot.classList.add('statusDone');
+      if(kind === 'error') dot.classList.add('statusSent');
+    }
+    setSaveState('loading', 'Iniciando...');
+
+    // ===== IndexedDB (memória automática) =====
+    const DB_NAME = 'btx_laudos_db';
+    const DB_VER = 1;
+    const STORE = 'cases';
+
+    function openDB(){
+      return new Promise((resolve, reject)=>{
+        const req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = ()=>{
+          const db = req.result;
+          if(!db.objectStoreNames.contains(STORE)){
+            const store = db.createObjectStore(STORE, { keyPath:'id' });
+            store.createIndex('updatedAt', 'updatedAt');
+            store.createIndex('status', 'status');
+            store.createIndex('code', 'codigo');
+          }
+        };
+        req.onsuccess = ()=> resolve(req.result);
+        req.onerror = ()=> reject(req.error);
+      });
+    }
+
+    async function dbPut(caseObj){
+      const db = await openDB();
+      return new Promise((resolve, reject)=>{
+        const tx = db.transaction(STORE,'readwrite');
+        tx.objectStore(STORE).put(caseObj);
+        tx.oncomplete = ()=> resolve(true);
+        tx.onerror = ()=> reject(tx.error);
+      });
+    }
+
+    async function dbGet(id){
+      const db = await openDB();
+      return new Promise((resolve, reject)=>{
+        const tx = db.transaction(STORE,'readonly');
+        const req = tx.objectStore(STORE).get(id);
+        req.onsuccess = ()=> resolve(req.result || null);
+        req.onerror = ()=> reject(req.error);
+      });
+    }
+
+    async function dbDelete(id){
+      const db = await openDB();
+      return new Promise((resolve, reject)=>{
+        const tx = db.transaction(STORE,'readwrite');
+        tx.objectStore(STORE).delete(id);
+        tx.oncomplete = ()=> resolve(true);
+        tx.onerror = ()=> reject(tx.error);
+      });
+    }
+
+    async function dbAll(){
+      const db = await openDB();
+      return new Promise((resolve, reject)=>{
+        const tx = db.transaction(STORE,'readonly');
+        const req = tx.objectStore(STORE).getAll();
+        req.onsuccess = ()=> resolve(req.result || []);
+        req.onerror = ()=> reject(req.error);
+      });
+    }
+
+    // ===== App State =====
+    let currentId = null;
+    let images = []; // {dataUrl, legend, name}
+    let autosaveTimer = null;
+    let isHydrating = false;
+
+    const fieldIds = ['profissional','registro','especialidade','instituicao','contato','codigo','data','finalidade','status','privacidade',
+      'paciente','idade','sexo','outras','queixa','tempo','evolucao','historia','sistema','lateralidade','sitio',
+      'tipoLesao','dimensoes','cor','superficie','bordas','sangra','morfologia','fatores','hipoteses','conduta','obs','prompt','respostaIA'
+    ];
+
+    function essentialMissing(){
+      const missing = [];
+      if(!($('queixa').value||'').trim()) missing.push('Queixa principal');
+      if(!($('historia').value||'').trim()) missing.push('História clínica / evolução');
+      if(!($('sitio').value||'').trim()) missing.push('Sítio anatômico específico');
+      if(!($('morfologia').value||'').trim()) missing.push('Descrição morfológica detalhada');
+      if(!($('conduta').value||'').trim()) missing.push('Conduta / material');
+      if(images.length < 1) missing.push('Pelo menos 1 imagem');
+      return missing;
+    }
+
+    function updateChecklist(){
+      const miss = essentialMissing();
+      $('checklistText').innerHTML = !miss.length ? `✅ <b>Perfeito.</b> Campos essenciais preenchidos.`
+                                : `⚠️ <b>Faltando:</b> ${miss.map(m=>`<u>${m}</u>`).join(', ')}.`;
+    }
+
+    function updateImgCount(){
+      $('imgCount').textContent = `${images.length} imagens`;
+    }
+
+    $('privacidade').addEventListener('change', ()=>{
+      $('lblPaciente').textContent = $('privacidade').value === 'nome' ? 'Nome completo do paciente' : 'Iniciais / Código do paciente';
+      scheduleAutosave();
+    });
+
+    // ===== View switching =====
+    function showHome(){
+      $('viewHome').classList.remove('hidden');
+      $('viewEditor').classList.add('hidden');
+      currentId = null;
+      setSaveState('saved', 'Pronto');
+      refreshHome();
+    }
+
+    function showEditor(){
+      $('viewHome').classList.add('hidden');
+      $('viewEditor').classList.remove('hidden');
+      $('btnRevisar').click();
+    }
+
+    $('btnHome').addEventListener('click', showHome);
+    $('btnNew').addEventListener('click', ()=> createNewCase());
+
+    // ===== Image Handling =====
+    function fileToDataUrl(file){
+      return new Promise((res, rej)=>{
+        const fr = new FileReader();
+        fr.onload = ()=>res(fr.result);
+        fr.onerror = rej;
+        fr.readAsDataURL(file);
+      });
+    }
+    function renderPreview(){
+      const wrap = $('preview');
+      wrap.innerHTML = '';
+      images.forEach((it, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'ph';
+        div.innerHTML = `
+          <img src="${it.dataUrl}" alt="Imagem ${idx+1}">
+          <div class="phMeta">
+            <label>Legenda da imagem ${idx+1}</label>
+            <input value="${it.legend||''}" placeholder="Ex.: vista geral / close / escala..." data-idx="${idx}">
+            <div class="small">Arquivo: <span style="font-family:var(--mono)">${it.name||'—'}</span> • Legenda vai para o PDF.</div>
+            <div class="rowActions" style="margin-top:10px">
+              <button class="btn mini" data-moveup="${idx}">↑</button>
+              <button class="btn mini" data-movedown="${idx}">↓</button>
+              <button class="btn mini danger" data-remove="${idx}">Remover</button>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+
+      wrap.querySelectorAll('input[data-idx]').forEach(inp=>{
+        inp.addEventListener('input', (e)=>{
+          const i = Number(e.target.getAttribute('data-idx'));
+          images[i].legend = e.target.value;
+          scheduleAutosave();
+        });
+      });
+
+      wrap.querySelectorAll('button[data-remove]').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const i = Number(b.getAttribute('data-remove'));
+          images.splice(i,1);
+          renderPreview(); updateChecklist(); updateImgCount(); scheduleAutosave();
+        });
+      });
+      wrap.querySelectorAll('button[data-moveup]').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const i = Number(b.getAttribute('data-moveup'));
+          if(i<=0) return;
+          const tmp = images[i-1]; images[i-1]=images[i]; images[i]=tmp;
+          renderPreview(); scheduleAutosave();
+        });
+      });
+      wrap.querySelectorAll('button[data-movedown]').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const i = Number(b.getAttribute('data-movedown'));
+          if(i>=images.length-1) return;
+          const tmp = images[i+1]; images[i+1]=images[i]; images[i]=tmp;
+          renderPreview(); scheduleAutosave();
+        });
+      });
+
+      updateImgCount();
+    }
+
+    $('fotos').addEventListener('change', async (e)=>{
+      const files = [...(e.target.files||[])];
+      if(!files.length) return;
+
+      let ok=0, fail=0;
+      for(const f of files){
+        try{
+          const dataUrl = await fileToDataUrl(f);
+          images.push({dataUrl, legend:'', name:f.name});
+          ok++;
+        }catch(err){
+          console.error('Falha ao ler imagem:', f?.name, err);
+          fail++;
+        }
+      }
+      renderPreview();
+      if(ok) toast('Imagens adicionadas', `${ok} arquivo(s) carregado(s).`);
+      if(fail) toast('Atenção', `${fail} imagem(ns) não abriram. Use JPG/PNG (evite HEIC).`);
+      updateChecklist();
+      scheduleAutosave();
+    });
+
+    $('btnClearImages').addEventListener('click', ()=>{
+      if(!confirm('Remover todas as imagens deste caso?')) return;
+      images = [];
+      renderPreview();
+      updateChecklist();
+      scheduleAutosave();
+    });
+
+    // ===== Case build/restore =====
+    function collectCase(){
+      const obj = { id: currentId || uid() };
+      fieldIds.forEach(id => obj[id] = $(id).value);
+      obj.images = images;
+      obj.updatedAt = new Date().toISOString();
+      return obj;
+    }
+
+    async function hydrateCase(obj){
+      isHydrating = true;
+      currentId = obj.id;
+      fieldIds.forEach(id=>{
+        if($(id)) $(id).value = obj[id] || (id==='data' ? nowDate() : '');
+      });
+      images = Array.isArray(obj.images) ? obj.images : [];
+      $('updatedAt').value = fmtDateTime(obj.updatedAt);
+      $('editorBadge').textContent = `Caso: ${obj.codigo || obj.id.slice(0,8)} • ${obj.status || 'draft'}`;
+      $('privacidade').dispatchEvent(new Event('change'));
+      renderPreview();
+      updateChecklist();
+      isHydrating = false;
+      setSaveState('saved', 'Carregado');
+    }
+
+    // ===== Autosave =====
+    function scheduleAutosave(){
+      if(isHydrating) return;
+      setSaveState('dirty', 'Alterações pendentes...');
+      clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(async ()=>{
+        try{
+          const obj = collectCase();
+          currentId = obj.id;
+          await dbPut(obj);
+          $('updatedAt').value = fmtDateTime(obj.updatedAt);
+          $('editorBadge').textContent = `Caso: ${obj.codigo || obj.id.slice(0,8)} • ${obj.status || 'draft'}`;
+          setSaveState('saved', 'Salvo automaticamente');
+        }catch(e){
+          console.warn(e);
+          setSaveState('error', 'Falha ao salvar');
+        }
+      }, 600);
+    }
+
+    fieldIds.forEach(id=>{
+      const el = $(id);
+      if(!el) return;
+      el.addEventListener('input', scheduleAutosave);
+      el.addEventListener('change', scheduleAutosave);
+    });
+
+    $('btnRevisar').addEventListener('click', updateChecklist);
+
+    // ===== Home list =====
+    function statusLabel(s){
+      if(s === 'draft') return '<span class="statusDot statusDraft"></span>Rascunho';
+      if(s === 'sent') return '<span class="statusDot statusSent"></span>Enviado';
+      if(s === 'done') return '<span class="statusDot statusDone"></span>Finalizado';
+      return '<span class="statusDot"></span>—';
+    }
+
+    function summarize(c){
+      const parts = [];
+      if(c.paciente) parts.push(`Paciente: ${c.paciente}`);
+      if(c.sitio) parts.push(`Sítio: ${c.sitio}`);
+      if(c.tipoLesao) parts.push(`Tipo: ${c.tipoLesao}`);
+      if(c.dimencoes) parts.push(`Dim: ${c.dimencoes}`);
+      if(c.images?.length) parts.push(`Fotos: ${c.images.length}`);
+      return parts.join(' • ') || '—';
+    }
+
+    function matchSearch(c, q){
+      if(!q) return true;
+      const hay = [
+        c.codigo, c.paciente, c.sitio, c.queixa, c.historia, c.morfologia, c.hipoteses, c.fatores, c.conduta, c.instituicao
+      ].join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+
+    async function refreshHome(){
+      const all = (await dbAll()).sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
+      const q = $('homeSearch').value.trim();
+      const filter = $('homeFilter').value;
+      const filtered = all.filter(c=>{
+        const okStatus = (filter==='all') ? true : (c.status===filter);
+        return okStatus && matchSearch(c,q);
+      });
+
+      // KPIs
+      $('kpiTotal').textContent = String(all.length);
+      $('kpiDraft').textContent = String(all.filter(x=>x.status==='draft').length);
+      $('kpiSent').textContent = String(all.filter(x=>x.status==='sent').length);
+      $('kpiDone').textContent = String(all.filter(x=>x.status==='done').length);
+
+      const tbody = $('homeTable');
+      tbody.innerHTML = '';
+      if(!filtered.length){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="5" style="color:var(--muted)">Nenhum caso encontrado. Clique em <b>Novo caso</b>.</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      filtered.forEach(c=>{
+        const tr = document.createElement('tr');
+        const code = c.codigo || c.id.slice(0,8);
+        const date = c.data || '—';
+        const upd = c.updatedAt ? fmtDateTime(c.updatedAt) : '';
+        tr.innerHTML = `
+          <td><b style="font-family:var(--mono)">${code}</b><div style="color:var(--muted);margin-top:4px;font-size:11px">${upd}</div></td>
+          <td>${date}</td>
+          <td>${statusLabel(c.status)}</td>
+          <td style="color:var(--muted)">${summarize(c)}</td>
+          <td>
+            <div class="rowActions">
+              <button class="btn mini primary" data-open="${c.id}">Abrir</button>
+              <button class="btn mini" data-dup="${c.id}">Duplicar</button>
+              <button class="btn mini danger" data-del="${c.id}">Excluir</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('button[data-open]').forEach(b=>{
+        b.addEventListener('click', async ()=>{
+          const id = b.getAttribute('data-open');
+          const obj = await dbGet(id);
+          if(!obj){ toast('Erro','Caso não encontrado.'); return; }
+          await hydrateCase(obj);
+          showEditor();
+        });
+      });
+      tbody.querySelectorAll('button[data-del]').forEach(b=>{
+        b.addEventListener('click', async ()=>{
+          const id = b.getAttribute('data-del');
+          if(!confirm('Excluir este caso? Isso não tem desfazer.')) return;
+          await dbDelete(id);
+          toast('Excluído','Caso removido.');
+          refreshHome();
+        });
+      });
+      tbody.querySelectorAll('button[data-dup]').forEach(b=>{
+        b.addEventListener('click', async ()=>{
+          const id = b.getAttribute('data-dup');
+          const obj = await dbGet(id);
+          if(!obj){ toast('Erro','Caso não encontrado.'); return; }
+          const copy = JSON.parse(JSON.stringify(obj));
+          copy.id = uid();
+          copy.codigo = (copy.codigo ? (copy.codigo + '-Copia') : '');
+          copy.status = 'draft';
+          copy.updatedAt = new Date().toISOString();
+          await dbPut(copy);
+          toast('Duplicado','Cópia criada como rascunho.');
+          refreshHome();
+        });
+      });
+    }
+
+    $('homeSearch').addEventListener('input', ()=> refreshHome());
+    $('homeFilter').addEventListener('change', ()=> refreshHome());
+
+    // ===== New case =====
+    async function createNewCase(){
+      const obj = {
+        id: uid(),
+        profissional:'', registro:'', especialidade:'', instituicao:'', contato:'',
+        codigo:'', data: nowDate(), finalidade:'Encaminhamento diagnóstico',
+        status:'draft', privacidade:'codigo',
+        paciente:'', idade:'', sexo:'', outras:'',
+        queixa:'', tempo:'', evolucao:'Estável', historia:'',
+        sistema:'Cavidade oral', lateralidade:'Não aplicável', sitio:'',
+        tipoLesao:'Mácula', dimensoes:'', cor:'Branca', superficie:'Lisa', bordas:'Bem definidas', sangra:'Não',
+        morfologia:'', fatores:'', hipoteses:'', conduta:'', obs:'',
+        prompt:'', respostaIA:'',
+        images: [],
+        updatedAt: new Date().toISOString()
+      };
+      await dbPut(obj);
+      await hydrateCase(obj);
+      showEditor();
+      toast('Novo caso', 'Criado e salvo automaticamente.');
+    }
+
+    // ===== Export / Import =====
+    function downloadText(filename, text){
+      const blob = new Blob([text], {type:'application/json;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 700);
+    }
+
+    $('btnExport').addEventListener('click', async ()=>{
+      if(!currentId){
+        toast('Selecione um caso', 'Abra um caso para exportar.');
+        return;
+      }
+      const obj = await dbGet(currentId);
+      if(!obj){ toast('Erro','Caso não encontrado.'); return; }
+      const code = (obj.codigo || 'caso').replace(/[^\w\-]+/g,'_');
+      downloadText(`BTX_Laudos_${code}.json`, JSON.stringify(obj, null, 2));
+      toast('Exportado','Backup do caso gerado.');
+    });
+
+    $('btnImport').addEventListener('click', ()=>{
+      const inp = document.createElement('input');
+      inp.type = 'file';
+      inp.accept = 'application/json';
+      inp.onchange = async ()=>{
+        const file = inp.files[0];
+        if(!file) return;
+        try{
+          const txt = await file.text();
+          const obj = JSON.parse(txt);
+          if(!obj || !obj.id) throw new Error('Arquivo sem id');
+          // Se já existe, cria novo id para não sobrescrever sem querer
+          const exists = await dbGet(obj.id);
+          if(exists){
+            obj.id = uid();
+            obj.codigo = obj.codigo ? (obj.codigo + '-Import') : '';
+          }
+          obj.updatedAt = new Date().toISOString();
+          await dbPut(obj);
+          toast('Importado','Caso importado para sua lista.');
+          refreshHome();
+        }catch(e){
+          console.warn(e);
+          toast('Erro','Arquivo inválido. Use export do BTX Laudos.');
+        }
+      };
+      inp.click();
+    });
+
+    // ===== IA prompt =====
+    function buildCaseText(){
+      const patientLabel = $('privacidade').value === 'nome' ? 'Nome' : 'Iniciais/Código';
+      const parts = [
+        `DADOS DO CASO (não inventar nada):`,
+        `Profissional: ${$('profissional').value || '[não informado]'} | Registro: ${$('registro').value || '[não informado]'} | Especialidade: ${$('especialidade').value || '[não informado]'}`,
+        `Instituição/Serviço: ${$('instituicao').value || '[não informado]'} | Contato: ${$('contato').value || '[não informado]'}`,
+        `Código do caso: ${$('codigo').value || '[não informado]'} | Data: ${$('data').value || '[não informado]'} | Finalidade: ${$('finalidade').value || '[não informado]'}`,
+        `Status: ${$('status').value || '[não informado]'}`,
+        `Paciente (${patientLabel}): ${$('paciente').value || '[não informado]'} | Idade: ${$('idade').value || '[não informado]'} | Sexo: ${$('sexo').value || '[não informado]'}`,
+        `Outras infos: ${$('outras').value || '[não informado]'}`,
+        ``,
+        `QUEIXA: ${$('queixa').value || '[não informado]'}`,
+        `TEMPO: ${$('tempo').value || '[não informado]'} | EVOLUÇÃO: ${$('evolucao').value || '[não informado]'}`,
+        `HISTÓRIA: ${$('historia').value || '[não informado]'}`,
+        ``,
+        `LOCALIZAÇÃO: Sistema=${$('sistema').value || '[não informado]'} | Sítio=${$('sitio').value || '[não informado]'} | Lateralidade=${$('lateralidade').value || '[não informado]'}`,
+        ``,
+        `MORFOLOGIA: Tipo=${$('tipoLesao').value || '[não informado]'} | Dimensões=${$('dimensoes').value || '[não informado]'} | Cor=${$('cor').value || '[não informado]'} | Superfície=${$('superficie').value || '[não informado]'} | Bordas=${$('bordas').value || '[não informado]'} | Sangramento=${$('sangra').value || '[não informado]'}`,
+        `Descrição: ${$('morfologia').value || '[não informado]'}`,
+        ``,
+        `FATORES: ${$('fatores').value || '[não informado]'}`,
+        `HIPÓTESES: ${$('hipoteses').value || '[function aiSystemInstructions(){
+  return `Você é um assistente clínico para APOIAR A ESCRITA de laudos/encaminhamentos.
+REGRAS:
+- NÃO diagnosticar.
+- NÃO interpretar imagens.
+- NÃO inventar dados.
+- Se faltar informação, diga exatamente o que falta.
+- Faça sugestões práticas (checklist + melhorias de texto).
+- Escreva em português, claro e profissional.
+SAÍDA:
+1) Checklist do que falta (se faltar)
+2) Sugestões objetivas de escrita
+3) Texto final pronto para colar no laudo (sem inventar dados).`;
+}
+
+function generateAssistPrompt(){
+  const pergunta = (document.getElementById('iaPergunta')?.value || '').trim();
+  const caseText = buildCaseText(); // já existe no projeto
+
+  const tarefa = pergunta
+    ? `TAREFA: Responda à dúvida do profissional e sugira melhorias no texto. Dúvida: "${pergunta}"`
+    : `TAREFA: Revise o texto do caso e diga o que falta para ficar completo, sem diagnosticar.`;
+
+  return `${aiSystemInstructions()}\n\n${tarefa}\n\nDADOS DO CASO (contexto):\n${caseText}`;
+}
+
+$('btnGerarPrompt').addEventListener('click', ()=>{
+  $('prompt').value = generateAssistPrompt();
+  toast('Prompt pronto','Você pode copiar/guardar, ou pedir ajuda online.');
+  scheduleAutosave();
+});
+
+$('btnCopiarPrompt').addEventListener('click', async ()=>{
+  const t = ($('prompt').value||'').trim();
+  if(!t){ toast('Nada para copiar','Gere o prompt primeiro.'); return; }
+  try{
+    await navigator.clipboard.writeText(t);
+    toast('Copiado','Prompt copiado para a área de transferência.');
+  }catch(e){
+    toast('Falhou','Seu navegador bloqueou a cópia. Selecione e copie manualmente.');
+  }
+});
+
+$('btnIAAjuda').addEventListener('click', async ()=>{
+  const prompt = generateAssistPrompt();
+  $('prompt').value = prompt;
+
+  // tenta chamar o servidor local (proxy) para OpenAI
+  $('btnIAAjuda').disabled = true;
+  $('btnIAAjuda').textContent = 'Consultando IA…';
+
+  try{
+    const r = await fetch('/api/ai', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        prompt,
+        // opcional: permitir trocar o modelo no futuro sem quebrar o front
+        model: (window.BTX_MODEL_DEFAULT || 'gpt-5')
+      })
+    });
+
+    if(!r.ok){
+      const txt = await r.text();
+      throw new Error(txt || `HTTP ${r.status}`);
+    }
+
+    const data = await r.json();
+    $('respostaIA').value = data.answer || '';
+    toast('IA respondeu','Revise e ajuste antes de enviar.');
+    scheduleAutosave();
+
+  }catch(err){
+    console.warn(err);
+    toast('IA indisponível','Para IA dentro do app, rode o servidor local (server.py). Você ainda pode usar “Copiar prompt” e colar no ChatGPT.');
+  }finally{
+    $('btnIAAjuda').disabled = false;
+    $('btnIAAjuda').textContent = 'IA — Ajudar no laudo (OpenAI)';
+  }
+});tGPT.'); scheduleAutosave(); });
+    $('btnCopiarPrompt').addEventListener('click', async ()=>{
+      const text = $('prompt').value.trim();
+      if(!text){ toast('Nada para copiar', 'Gere um prompt primeiro.'); return; }
+      try{ await navigator.clipboard.writeText(text); toast('Copiado','Prompt copiado.'); }
+      catch{ $('prompt').select(); document.execCommand('copy'); toast('Copiado','Prompt copiado (compatibilidade).'); }
+    });
+
+    // ===== PDF =====
+    async function getImageDims(dataUrl){
+      return new Promise((res)=>{
+        const img = new Image();
+        img.onload = ()=>res({w: img.width, h: img.height});
+        img.src = dataUrl;
+      });
+    }
+
+    async function generatePDF(){
+      if(!currentId){
+        toast('Abra um caso', 'Gere PDF a partir de um caso aberto.');
+        return;
+      }
+      if(!window.jspdf){
+        alert('A biblioteca do PDF não carregou. Abra o app com internet 1 vez (ou no GitHub Pages) e tente novamente.');
+        return;
+      }
+      const miss = essentialMissing();
+      if(miss.length){
+        const ok = confirm(`Faltando: ${miss.join(', ')}.\n\nGerar o PDF mesmo assim?`);
+        if(!ok) return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({unit:'mm', format:'a4'});
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const margin = 12;
+      let y = 14;
+
+      const split = (t, w)=>doc.splitTextToSize(String(t||''), w);
+
+      const addHeading = (t)=>{
+        doc.setFont('helvetica','bold'); doc.setFontSize(14);
+        doc.text(t, margin, y); y += 8;
+        doc.setDrawColor(37,99,235); doc.setLineWidth(0.6);
+        doc.line(margin, y, pageW - margin, y); y += 6;
+      };
+
+      const addLabel = (label, value)=>{
+        doc.setFontSize(10); doc.setFont('helvetica','bold');
+        doc.text(label, margin, y); y += 5;
+        doc.setFont('helvetica','normal');
+        const lines = split(value || '—', pageW - margin*2);
+        doc.text(lines, margin, y);
+        y += lines.length*5 + 2;
+        if(y > pageH - 18){ doc.addPage(); y = 14; }
+      };
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text('RELATÓRIO CLÍNICO / ENCAMINHAMENTO', margin, y); y += 10;
+
+      addHeading('Identificação');
+      addLabel('Profissional / Serviço', `${$('profissional').value || '—'} | ${$('registro').value || '—'} | ${$('especialidade').value || '—'}`);
+      addLabel('Instituição / Contato', `${$('instituicao').value || '—'} | ${$('contato').value || '—'}`);
+      addLabel('Caso', `Código: ${$('codigo').value || '—'} | Data: ${$('data').value || '—'} | Finalidade: ${$('finalidade').value || '—'} | Status: ${$('status').value || '—'}`);
+      const patientLabel = $('privacidade').value === 'nome' ? 'Nome' : 'Iniciais/Código';
+      addLabel('Paciente', `${patientLabel}: ${$('paciente').value || '—'} | Idade: ${$('idade').value || '—'} | Sexo: ${$('sexo').value || '—'} | ${$('outras').value || ''}`);
+
+      addHeading('Clínica');
+      addLabel('Queixa principal', $('queixa').value);
+      addLabel('História clínica / evolução', `Tempo: ${$('tempo').value || '—'} | Evolução: ${$('evolucao').value || '—'}\n\n${$('historia').value || '—'}`);
+
+      addHeading('Lesão / Região');
+      addLabel('Localização', `Sistema: ${$('sistema').value || '—'} | Sítio: ${$('sitio').value || '—'} | Lateralidade: ${$('lateralidade').value || '—'}`);
+      addLabel('Morfologia', `Tipo: ${$('tipoLesao').value || '—'} | Dimensões: ${$('dimensoes').value || '—'}\nCor: ${$('cor').value || '—'} | Superfície: ${$('superficie').value || '—'} | Bordas: ${$('bordas').value || '—'} | Sangramento: ${$('sangra').value || '—'}\n\n${$('morfologia').value || '—'}`);
+
+      addHeading('Contexto e conduta');
+      addLabel('Fatores associados', $('fatores').value || '—');
+      addLabel('Hipóteses clínicas', $('hipoteses').value || '—');
+      addLabel('Conduta / material', $('conduta').value || '—');
+      addLabel('Observações', $('obs').value || '—');
+
+      doc.setFont('helvetica','italic'); doc.setFontSize(10);
+      const decl = 'Declaração: Relatório de descrição clínica. Correlacionar clinicamente e laboratorialmente. Não constitui diagnóstico definitivo isolado.';
+      doc.text(split(decl, pageW - margin*2), margin, pageH - 16);
+
+      if(images.length){
+        for(let i=0;i<images.length;i++){
+          doc.addPage();
+          let yy = 14;
+          doc.setFont('helvetica','bold'); doc.setFontSize(12);
+          doc.text(`Imagem ${i+1}`, margin, yy); yy += 7;
+          doc.setFont('helvetica','normal'); doc.setFontSize(10);
+          const leg = (images[i].legend||'').trim() || 'Sem legenda';
+          doc.text(split(`Arquivo: ${images[i].name || ''}\nLegenda: ${leg}`, pageW - margin*2), margin, yy); yy += 14;
+
+          const imgData = images[i].dataUrl;
+          const fmt = imgData.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+          const maxW = pageW - margin*2;
+          const maxH = pageH - yy - 20;
+          const dims = await getImageDims(imgData);
+          const r = Math.min(maxW / dims.w, maxH / dims.h);
+          const w = dims.w * r;
+          const h = dims.h * r;
+          const x = (pageW - w)/2;
+          doc.addImage(imgData, fmt, x, yy, w, h);
+
+          doc.setFontSize(9);
+          doc.setTextColor(120);
+          doc.text(`${$('codigo').value || ''} • ${$('data').value || ''}`, margin, pageH - 10);
+          doc.setTextColor(0);
+        }
+      }
+
+      const safeCode = ($('codigo').value || 'relatorio').replace(/[^\w\-]+/g,'_');
+      doc.save(`BTX_Laudos_${safeCode}.pdf`);
+      toast('PDF gerado', 'Arquivo baixado com sucesso.');
+    }
+
+    $('btnPDF').addEventListener('click', generatePDF);
+
+    // ===== Boot =====
+    async function boot(){
+      try{
+        // create a welcome case if none exists
+        const all = await dbAll();
+        if(!all.length){
+          await createNewCase();
+          toast('Bem-vindo', 'Criei seu primeiro caso. Tudo salva automaticamente.');
+          return;
+        }
+        setSaveState('saved', 'Pronto');
+        showHome();
+      }catch(e){
+        console.warn(e);
+        setSaveState('error', 'Erro no banco');
+        toast('Erro', 'Seu navegador bloqueou o IndexedDB. Use Chrome/Edge.');
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>

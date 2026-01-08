@@ -1,0 +1,22 @@
+{
+  "name": "BTX Laudos — Final (V5)",
+  "short_name": "BTX Laudos",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "description": "PWA offline-first com memória automática (IndexedDB), fotos e PDF.",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
